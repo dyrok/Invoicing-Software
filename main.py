@@ -4,8 +4,8 @@ import mysql.connector
 def create_connection():
     host = "localhost"
     user = "root"
-    password = "Neel@10062006"
-    database = "IP_proj"
+    password = "your_pass"
+    database = "your-db"
     print(f"Connecting to MySQL server at {host}...")
     return mysql.connector.connect(
         host=host,
