@@ -4,8 +4,8 @@ import mysql.connector
 def create_connection():
     host = "localhost"
     user = "root"
-    password = "your_pass"
-    database = "your-db"
+    password = "Neel@10062006"
+    database = "IP_proj"
     print(f"Connecting to MySQL server at {host}...")
     return mysql.connector.connect(
         host=host,
@@ -13,6 +13,11 @@ def create_connection():
         password=password,
         database=database
     )
+
+
+
+
+
 
 # Function to add a new invoice
 def add_invoice(cursor):
@@ -29,6 +34,13 @@ def add_invoice(cursor):
     cursor.execute(query, values)
 
     print("Invoice added successfully!")
+
+
+
+
+
+
+
 
 # Function to display details of a specific invoice
 def display_invoice_details(cursor):
@@ -52,6 +64,15 @@ def display_invoice_details(cursor):
     else:
         print(f"No invoice found with invoice number {invoice_number}")
 
+
+
+
+
+
+
+
+
+
 #ALL INVOICE DETAILS
 def display_all_invoices(cursor):
     # Retrieving data from the database
@@ -70,6 +91,13 @@ def display_all_invoices(cursor):
         print("=========================================================")
     else:
         print("No invoices found.")
+
+
+
+
+
+
+
 
 
 #listing all employee function
@@ -91,6 +119,36 @@ def list_all_employees(cursor):
     else:
         print("No employees found.")
 
+
+
+def Custom_query():
+    print("This is for development purposes only. Please confirm if you are the developer.")
+    choice = input("Please enter Y if you are the developer. Press any other key to return to the main menu: ")
+
+    if choice == "Y" or choice == "y":
+        query = input("Enter your query: ")
+        # Execute the query
+        connection = create_connection()
+        cursor = connection.cursor()
+        cursor.execute(query)
+
+        # Fetch and print the results
+        results = cursor.fetchall()
+        if results:
+            print("Query Results:")
+            for result in results:
+                print(result)
+        else:
+            print("No results found.")
+
+        # Close the connection
+        cursor.close()
+        connection.close()
+    else:
+        print("Here's the Main Menu")
+
+
+
 # Main function
 def main():
     # Creating a MySQL connection and cursor
@@ -98,7 +156,7 @@ def main():
     cursor = connection.cursor()
 
     while True:
-        print("\n1. Inv Add\n2. Inv Detail\n3. Exit")
+        print("\n1. Inv Add\n2. Inv Detail\n3. Custom Query (For Developers!!!)\n4. Exit")
         choice = input("Enter your choice (1/2/3): ")
 
         if choice == "1":
@@ -107,12 +165,13 @@ def main():
             display_all_invoices(cursor)
             display_invoice_details(cursor)
         elif choice == "3":
-            break
+            Custom_query()
+        elif choice == "4":
+            exit()
+            cursor.close()
+            connection.close()
         else:
-            print("Invalid choice. Please enter 1, 2, or 3.")
+            print("Invalid choice. Please enter 1, 2, 3 or 4.")
 
-    # Closing the cursor and connection
-    cursor.close()
-    connection.close()
 
 main()
