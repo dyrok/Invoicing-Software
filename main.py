@@ -5,7 +5,7 @@ import matplotlib.pylot as plt
 def create_connection():
     host = "localhost"
     user = "root"
-    password = "Neel@1006"
+    password = "password"
     database = "ip_inv"
     print(f"Connecting to MySQL server at {host}...")
     
