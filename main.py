@@ -1,27 +1,54 @@
 import mysql.connector
+import matplotlib.pyplot as plt
 
-# Establishing MySQL Connection
 def create_connection():
     host = "localhost"
     user = "root"
     password = "password"
     database = "ip_inv"
     print(f"Connecting to MySQL server at {host}...")
-    return mysql.connector.connect(
+    
+    # Establishing MySQL connection
+    connection = mysql.connector.connect(
         host=host,
         user=user,
         password=password,
         database=database
     )
 
-def main():
-    # Creating a MySQL connection and cursor
-    connection = create_connection()
+    # Creating a cursor
     cursor = connection.cursor()
 
+    # Check if the "invoices" table exists
+    cursor.execute("SHOW TABLES LIKE 'invoices'")
+    table_exists = cursor.fetchone()
+
+    if not table_exists:
+        # If the table does not exist, create it
+        create_table_query = """
+        CREATE TABLE invoices (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            invoice_number VARCHAR(255),
+            buyer_name VARCHAR(255),
+            buyer_phone VARCHAR(20),
+            invoice_amount FLOAT,
+            invoice_remark VARCHAR(255),
+            billing_address VARCHAR(255),
+            invoice_date DATE
+        )
+        """
+        cursor.execute(create_table_query)
+        print("Table 'invoices' created.")
+
+    return connection, cursor
+
+
+def main():
+    # ... (Your existing code)
+
     while True:
-        print("\n1. Inv Add\n2. Inv Detail\n3. Custom Query (For Developers!!!)\n4. Display all Customers\n5. Delete Invoice\n6. Exit")
-        choice = input("Enter your choice (1/2/3/4/5/6): ")
+        print("\n1. Inv Add\n2. Inv Detail\n3. Custom Query (For Developers!!!)\n4. Display all Customers\n5. Delete Invoice\n6. Generate Revenue Bar Graph\n7. Exit")
+        choice = input("Enter your choice (1/2/3/4/5/6/7): ")
 
         if choice == "1":
             add_invoice(connection, cursor)
@@ -35,9 +62,32 @@ def main():
         elif choice == "5":
             delete_invoice(cursor, connection)
         elif choice == "6":
+            generate_revenue_bar_graph(cursor)
+        elif choice == "7":
             exit_program(connection, cursor)
         else:
-            print("Invalid choice. Please enter 1, 2, 3, 4, 5, or 6.")
+            print("Invalid choice. Please enter 1, 2, 3, 4, 5, 6, or 7.")
+
+
+# Function to generate a bar graph of annual revenue in every month
+def generate_revenue_bar_graph(cursor):
+    # Retrieving data from the database
+    query = "SELECT MONTH(invoice_date) AS month, SUM(invoice_amount) AS total_revenue FROM invoices GROUP BY MONTH(invoice_date)"
+    cursor.execute(query)
+    results = cursor.fetchall()
+
+    if results:
+        months = [result[0] for result in results]
+        total_revenue = [result[1] for result in results]
+
+        # Creating a bar graph
+        plt.bar(months, total_revenue)
+        plt.xlabel('Month')
+        plt.ylabel('Total Revenue')
+        plt.title('Annual Revenue in Every Month')
+        plt.show()
+    else:
+        print("No data available for generating the bar graph.")
 
 # Function to add a new invoice
 def add_invoice(connection, cursor):
