@@ -1,5 +1,5 @@
 import mysql.connector
-import matplotlib.pylot as plt
+import matplotlib.pyplot as plt
 
 # Establishing MySQL Connection
 def create_connection():
