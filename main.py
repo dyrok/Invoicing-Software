@@ -34,6 +34,7 @@ def generate_revenue_bar_graph(cursor):
         plt.xlabel('Month')
         plt.ylabel('Total Revenue')
         plt.title('Annual Revenue in Every Month')
+        plt.xticks(months,rotation='horizontal')
         plt.show()
     else:
         print("No data available for generating the bar graph.")
